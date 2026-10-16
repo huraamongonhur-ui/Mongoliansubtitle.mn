@@ -1,4 +1,6 @@
+api/
 // Vercel serverless function: API key зөвхөн энд (серверт) хадгалагдана.
+
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "POST only" });
