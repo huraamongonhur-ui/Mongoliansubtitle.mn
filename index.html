@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Хадмал — .srt файлаа монгол болго</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@500;600&family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ECE9F3;
+    --paper:#FBFAFD;
+    --ink:#2B2745;
+    --muted:#625E7E;
+    --tone:rgba(43,39,69,.16);
+    --rose:#B8466B;
+    --on-rose:#FFFFFF;
+    --hl:#F1E6C8;
+    --on-hl:#2B2745;
+    --gold:#B8964E;
+    --shadow:0 18px 34px -22px rgba(43,39,69,.45);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1F1B36;
+      --paper:#292450;
+      --ink:#F0EEF9;
+      --muted:#B7B3D3;
+      --tone:rgba(240,238,249,.14);
+      --rose:#C9567B;
+      --hl:#DCC283;
+      --on-hl:#1F1B36;
+      --shadow:0 18px 34px -22px rgba(0,0,0,.6);
+      color-scheme: dark;
+    }
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Noto Sans","Noto Sans JP","Hiragino Sans","Yu Gothic",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+    font-size:16px;line-height:1.65;
+  }
+  .page{max-width:940px;margin:0 auto;padding:18px 16px 64px}
+  .display{
+    font-family:"Noto Serif","Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",Georgia,serif;
+    font-weight:600;letter-spacing:.005em;line-height:1.2;
+  }
+
+  /* ---------- Panel (thin ink line, soft lift) ---------- */
+  .panel{
+    position:relative;background:var(--paper);
+    border:1.5px solid var(--ink);border-radius:3px;
+    box-shadow:var(--shadow);overflow:hidden;
+  }
+
+  /* ---------- Header ---------- */
+  .top{display:flex;align-items:center;gap:12px;padding:6px 2px 22px}
+  .hanko{
+    width:36px;height:36px;display:grid;place-items:center;
+    background:var(--rose);color:var(--on-rose);
+    border-radius:3px;font-size:20px;transform:rotate(-4deg);
+    font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
+  }
+  .brand{font-size:22px}
+
+  /* ---------- Hero ---------- */
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:stretch}
+  .title-panel{padding:30px 26px;display:flex;flex-direction:column;justify-content:space-between;gap:30px;min-height:350px}
+  .title-panel::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:radial-gradient(var(--tone) 1.2px, transparent 1.7px);
+    background-size:10px 10px;
+    -webkit-mask-image:linear-gradient(120deg, transparent 45%, #000 100%);
+            mask-image:linear-gradient(120deg, transparent 45%, #000 100%);
+  }
+  .ghost{
+    position:absolute;right:4px;bottom:-30px;font-size:180px;line-height:1;
+    color:transparent;-webkit-text-stroke:1.5px var(--ink);opacity:.2;
+    pointer-events:none;user-select:none;
+    font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
+  }
+  h1{position:relative;z-index:1;margin:0;font-size:clamp(30px,6vw,48px)}
+  .bubble{
+    position:relative;z-index:1;max-width:44ch;
+    background:var(--paper);border:1.5px solid var(--ink);border-radius:22px;
+    padding:14px 18px;font-size:15.5px;
+  }
+  .bubble::after{
+    content:"";position:absolute;top:-10px;left:32px;width:16px;height:16px;
+    background:var(--paper);border-left:1.5px solid var(--ink);border-top:1.5px solid var(--ink);
+    transform:rotate(45deg);
+  }
+
+  .screen-panel{display:flex;flex-direction:column}
+  .screen{
+    position:relative;flex:1;min-height:250px;
+    background:
+      radial-gradient(circle at 70% 36%, #FFF3D6 0 9.5%, rgba(255,243,214,.25) 10%, transparent 17%),
+      linear-gradient(180deg,#3C3672 0%,#7F5C9E 50%,#E5A9A6 100%);
+  }
+  .screen .speed{
+    position:absolute;inset:0;
+    background:repeating-conic-gradient(from 0deg at 70% 36%, transparent 0 3deg, rgba(255,255,255,.16) 3deg 3.4deg);
+    -webkit-mask-image:radial-gradient(circle at 70% 36%, transparent 14%, #000 80%);
+            mask-image:radial-gradient(circle at 70% 36%, transparent 14%, #000 80%);
+  }
+  .screen .ridge{
+    position:absolute;left:0;right:0;bottom:0;height:36%;background:#2B2745;
+    clip-path:polygon(0 60%,12% 40%,27% 56%,44% 28%,60% 54%,78% 34%,100% 58%,100% 100%,0 100%);
+  }
+  .screen .ridge.back{height:46%;background:#4A3F78;opacity:.8;
+    clip-path:polygon(0 52%,20% 34%,38% 52%,58% 30%,76% 50%,100% 36%,100% 100%,0 100%);}
+  .sub{
+    position:absolute;left:6%;right:6%;bottom:9%;text-align:center;
+    color:#FFF8E6;font-weight:600;
+    font-size:clamp(15px,3vw,22px);line-height:1.35;
+    text-shadow:
+      -1.5px -1.5px 0 #1F1B36, 1.5px -1.5px 0 #1F1B36, -1.5px 1.5px 0 #1F1B36, 1.5px 1.5px 0 #1F1B36,
+      0 1.5px 0 #1F1B36, 0 -1.5px 0 #1F1B36, 1.5px 0 0 #1F1B36, -1.5px 0 0 #1F1B36;
+    white-space:pre-line;
+  }
+  .toggle{display:flex;border-top:1.5px solid var(--ink)}
+  .toggle button{
+    flex:1;font:inherit;font-weight:600;padding:10px 12px;min-height:46px;
+    background:var(--paper);color:var(--ink);border:0;cursor:pointer;
+  }
+  .toggle button + button{border-left:1.5px solid var(--ink)}
+  .toggle button[aria-pressed="true"]{background:var(--hl);color:var(--on-hl)}
+
+  /* ---------- Tool ---------- */
+  .tool{margin-top:52px}
+  .tool h2{font-size:clamp(22px,4.4vw,30px);margin:0 0 6px}
+  .hint{color:var(--muted);margin:0 0 20px}
+
+  .steps{list-style:none;margin:0 0 22px;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .steps li{
+    display:flex;align-items:center;gap:10px;padding:10px 14px;
+    border:1.5px solid var(--ink);border-radius:3px;background:var(--paper);font-weight:600;
+  }
+  .steps .n{
+    flex:none;width:26px;height:26px;border-radius:50%;
+    display:grid;place-items:center;font-size:13px;
+    border:1.5px solid var(--ink);
+  }
+  .steps li.active{background:var(--hl);color:var(--on-hl)}
+  .steps li.done{background:var(--ink);color:var(--paper)}
+  .steps li.done .n{border-color:var(--paper)}
+  @media (max-width:560px){ .steps li{font-size:14px;padding:8px 10px} .steps .n{display:none} }
+
+  .drop{padding:36px 18px;text-align:center;border-style:dashed;cursor:pointer;transition:background .15s}
+  .drop.over{background:var(--hl);color:var(--on-hl)}
+  .drop p{margin:0 0 18px;font-weight:600;font-size:17px}
+  .row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+
+  .btn{
+    font:inherit;font-weight:600;min-height:48px;padding:10px 24px;
+    background:var(--paper);color:var(--ink);
+    border:1.5px solid var(--ink);border-radius:3px;cursor:pointer;
+    transition:background .15s, transform .08s;
+  }
+  .btn:hover:not(:disabled){background:var(--hl);color:var(--on-hl)}
+  .btn:active:not(:disabled){transform:translateY(1px)}
+  .btn.primary{background:var(--rose);color:var(--on-rose);border-color:var(--rose)}
+  .btn.primary:hover:not(:disabled){background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .drop:focus-visible,.btn:focus-visible,.toggle button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+  .file{display:none;margin-top:22px;padding:18px 20px}
+  .file.show{display:block}
+  .file strong{word-break:break-all}
+  .file .row{justify-content:flex-start;margin-top:14px}
+
+  .progress{display:none;margin-top:22px;padding:18px 20px}
+  .progress.show{display:block}
+  .bar{height:14px;border:1.5px solid var(--ink);border-radius:2px;background:var(--paper);overflow:hidden}
+  .bar > i{
+    display:block;height:100%;width:0;
+    background:radial-gradient(rgba(255,255,255,.5) 1.1px, transparent 1.6px) 0 0/6px 6px, var(--rose);
+    transition:width .25s;
+  }
+  .status{margin:10px 0 0;font-weight:600}
+
+  .error{display:none;margin-top:22px;padding:16px 20px;background:var(--hl);color:var(--on-hl);border-color:var(--gold)}
+  .error.show{display:block}
+  .error b{display:block;margin-bottom:4px}
+  .error small{display:block;margin-top:8px;opacity:.85;font-size:13.5px}
+
+  .result{display:none;margin-top:32px}
+  .result.show{display:block}
+  .result h3{font-size:clamp(20px,4vw,26px);margin:0 0 14px}
+  .preview{max-height:430px;overflow:auto}
+  .pair{display:grid;grid-template-columns:1fr 1fr;border-bottom:1.5px solid var(--ink)}
+  .pair:last-child{border-bottom:0}
+  .pair .t{grid-column:1/-1;padding:5px 14px;font-size:12.5px;font-weight:600;background:var(--ink);color:var(--paper)}
+  .pair .a,.pair .b{padding:10px 14px;white-space:pre-line;font-size:15px}
+  .pair .a{color:var(--muted);border-right:1.5px solid var(--ink)}
+  .pair .b{font-weight:600}
+  @media (max-width:560px){
+    .pair{grid-template-columns:1fr}
+    .pair .a{border-right:0;padding-bottom:2px}
+  }
+  .result .row{justify-content:flex-start;margin-top:22px}
+
+  .note{margin-top:44px;color:var(--muted);font-size:14px;max-width:64ch}
+  input[type=file]{display:none}
+
+  @media (max-width:760px){
+    .hero{grid-template-columns:1fr}
+    .title-panel{min-height:0}
+    .ghost{font-size:140px}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="top">
+    <div class="hanko" aria-hidden="true">訳</div>
+    <div class="brand display">Хадмал</div>
+  </header>
+
+  <section class="hero">
+    <div class="panel title-panel">
+      <div class="ghost" aria-hidden="true">翻訳</div>
+      <h1 class="display">Хадмалаа монгол болго</h1>
+      <p class="bubble">Ямар ч хэлний .srt хадмалын файлаа оруулахад монгол орчуулгатай .srt буцаана. Цаг, дугаар хэвээрээ үлдэнэ.</p>
+    </div>
+
+    <div class="panel screen-panel">
+      <div class="screen" role="img" aria-label="Жишээ дүр зураг дээрх хадмал">
+        <div class="speed"></div>
+        <div class="ridge back"></div>
+        <div class="ridge"></div>
+        <div class="sub" id="demoSub"></div>
+      </div>
+      <div class="toggle">
+        <button type="button" id="btnOrig" aria-pressed="false">Эх хэл</button>
+        <button type="button" id="btnMn" aria-pressed="true">Монгол</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool" id="tool">
+    <h2 class="display">Файлаа оруул</h2>
+    <p class="hint">Анимэ видеог биш, зөвхөн хадмалын .srt файлыг оруулна.</p>
+
+    <ol class="steps" id="steps">
+      <li class="active" data-s="1"><span class="n">1</span>Оруулах</li>
+      <li data-s="2"><span class="n">2</span>Орчуулах</li>
+      <li data-s="3"><span class="n">3</span>Татах</li>
+    </ol>
+
+    <div class="panel drop" id="drop" role="button" tabindex="0" aria-label="Файл сонгох эсвэл энд чирж тавих">
+      <p>.srt файлаа энд чирж тавь</p>
+      <div class="row">
+        <button type="button" class="btn primary" id="pick">Файл сонгох</button>
+        <button type="button" class="btn" id="sample">Жишээ хадмал ашиглах</button>
+      </div>
+      <input type="file" id="fileInput" accept=".srt,text/plain">
+    </div>
+
+    <div class="panel file" id="fileBox">
+      <div><strong id="fileName"></strong> — <span id="fileInfo"></span></div>
+      <div class="row">
+        <button type="button" class="btn primary" id="go">Орчуулах</button>
+        <button type="button" class="btn" id="reset">Өөр файл сонгох</button>
+      </div>
+    </div>
+
+    <div class="panel progress" id="progress" aria-live="polite">
+      <div class="bar"><i id="barFill"></i></div>
+      <p class="status" id="statusText"></p>
+    </div>
+
+    <div class="panel error" id="errorBox" role="alert"></div>
+
+    <div class="result" id="result">
+      <h3 class="display">Орчуулга дууслаа</h3>
+      <div class="panel preview" id="preview"></div>
+      <div class="row">
+        <button type="button" class="btn primary" id="download">Татаж авах (.mn.srt)</button>
+        <button type="button" class="btn" id="copy">Хуулж авах</button>
+      </div>
+    </div>
+  </section>
+
+  <p class="note">Орчуулгыг Claude хийдэг. Нэр, нэр томьёог заримдаа буруу орчуулж болзошгүй тул үзэхээсээ өмнө нэг удаа шалгаарай.</p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var BATCH = 6;        // нэг удаа илгээх хадмалын мөр (богино байвал таслагдахгүй)
+  var PARALLEL = 2;     // зэрэг ажиллах хүсэлтийн тоо
+
+  var SAMPLE = [
+    "1","00:00:01,000 --> 00:00:03,500","I'll be there before the sun goes down.","",
+    "2","00:00:04,000 --> 00:00:06,800","Then promise me\nyou won't look back.","",
+    "3","00:00:07,200 --> 00:00:09,000","<i>...I promise.</i>","",
+    "4","00:00:10,000 --> 00:00:12,500","The gate closes at midnight.\nWe have to hurry.",""
+  ].join("\n");
+
+  var items = [];
+  var fileName = "";
+  var busy = false;
+
+  function $(id){ return document.getElementById(id); }
+  function show(id, on){ $(id).classList.toggle("show", !!on); }
+  function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+  /* ---------- Steps ---------- */
+  function setStep(n){
+    var lis = $("steps").querySelectorAll("li");
+    for (var i = 0; i < lis.length; i++){
+      var s = Number(lis[i].getAttribute("data-s"));
+      lis[i].classList.toggle("active", s === n);
+      lis[i].classList.toggle("done", s < n);
+    }
+  }
+
+  /* ---------- Demo screen ---------- */
+  var demo = {
+    orig: "I'll be there before the sun goes down.\nThen promise me you won't look back.",
+    mn:   "Нар жаргахаас өмнө би очно.\nТэгвэл эргэж харахгүй гэж амла."
+  };
+  function showDemo(which){
+    $("demoSub").textContent = demo[which];
+    $("btnOrig").setAttribute("aria-pressed", which === "orig");
+    $("btnMn").setAttribute("aria-pressed", which === "mn");
+  }
+  $("btnOrig").addEventListener("click", function(){ showDemo("orig"); });
+  $("btnMn").addEventListener("click", function(){ showDemo("mn"); });
+  showDemo("mn");
+
+  /* ---------- SRT parse / write ---------- */
+  function parseSrt(text){
+    text = text.replace(/\r\n/g, "\n").replace(/^\uFEFF/, "").trim();
+    var out = [];
+    text.split(/\n\s*\n/).forEach(function(block){
+      var lines = block.split("\n");
+      if (lines.length >= 3 && lines[1].indexOf("-->") !== -1){
+        out.push({num: lines[0].trim(), time: lines[1].trim(), text: lines.slice(2).join("\n"), mn: null});
+      }
+    });
+    return out;
+  }
+  function writeSrt(list){
+    return list.map(function(i){
+      return i.num + "\n" + i.time + "\n" + (i.mn != null ? i.mn : i.text);
+    }).join("\n\n") + "\n";
+  }
+
+  /* ---------- Claude API ---------- */
+  async function callOnce(texts){
+    var res = await fetch("/api/translate", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({texts: texts})
+    });
+    if (!res.ok){
+      var err = new Error("HTTP " + res.status);
+      err.status = res.status;
+      throw err;
+    }
+    var data = await res.json();
+    var arr = data.translations;
+    if (!Array.isArray(arr) || arr.length !== texts.length) throw new Error("Мөрийн тоо таарсангүй");
+    return arr.map(String);
+  }
+
+  // Амжилтгүй бол дахин оролдоно. Хариу таслагдсан/буруу бол багцыг хувааж оролдоно.
+  async function translateAdaptive(texts){
+    var lastErr = null;
+    for (var a = 0; a < 3; a++){
+      try{
+        return await callOnce(texts);
+      }catch(e){
+        lastErr = e;
+        if (e.status && [400, 401, 403, 404].indexOf(e.status) !== -1) throw e;
+        if (e.status === 429 || e.status >= 500 || e instanceof TypeError){
+          await sleep(1500 * (a + 1));
+        }
+      }
+    }
+    var networkish = lastErr && (lastErr instanceof TypeError || lastErr.status === 429 || lastErr.status >= 500);
+    if (texts.length > 1 && !networkish){
+      var mid = Math.ceil(texts.length / 2);
+      var left = await translateAdaptive(texts.slice(0, mid));
+      var right = await translateAdaptive(texts.slice(mid));
+      return left.concat(right);
+    }
+    throw lastErr;
+  }
+
+  /* ---------- UI helpers ---------- */
+  function setError(title, detail, hint){
+    var box = $("errorBox");
+    box.textContent = "";
+    if (title){
+      var b = document.createElement("b");
+      b.textContent = title;
+      box.appendChild(b);
+      if (detail){
+        var p = document.createElement("span");
+        p.textContent = detail;
+        box.appendChild(p);
+      }
+      if (hint){
+        var s = document.createElement("small");
+        s.textContent = hint;
+        box.appendChild(s);
+      }
+    }
+    show("errorBox", !!title);
+  }
+  function setProgress(done, total){
+    $("barFill").style.width = (total ? Math.round(done / total * 100) : 0) + "%";
+    $("statusText").textContent = "Орчуулж байна… " + done + "/" + total;
+  }
+
+  function loadText(name, text){
+    var parsed = parseSrt(text);
+    setError("");
+    show("result", false);
+    show("progress", false);
+    if (!parsed.length){
+      items = [];
+      show("fileBox", false);
+      setStep(1);
+      setError("Энэ файл .srt хэлбэртэй биш байна.", "Дугаар, цаг, текст гэсэн гурван хэсэгтэй мөрүүд байх ёстой.");
+      return;
+    }
+    items = parsed;
+    fileName = name;
+    $("fileName").textContent = name;
+    $("fileInfo").textContent = items.length + " хадмалын мөр";
+    show("fileBox", true);
+    setStep(2);
+  }
+
+  function readFile(file){
+    if (!file) return;
+    var r = new FileReader();
+    r.onload = function(){ loadText(file.name, String(r.result)); };
+    r.onerror = function(){ setError("Файлыг унших боломжгүй байна.", "Дахин сонгоно уу."); };
+    r.readAsText(file, "utf-8");
+  }
+
+  function describeError(e){
+    var code = e && e.status ? "HTTP " + e.status : (e && e.message ? e.message : "тодорхойгүй алдаа");
+    var hint;
+    if (e && (e.status === 401 || e.status === 403 || e.status === 404 || e instanceof TypeError)){
+      hint = "Сервер зөв тохируулагдаагүй байна. Vercel дээр ANTHROPIC_API_KEY оруулсан эсэхээ шалгана уу.";
+    }else if (e && e.status === 429){
+      hint = "Хэт олон хүсэлт илгээсэн байна. Хэдэн секунд хүлээгээд «Орчуулах»-ыг дахин дарна уу.";
+    }else{
+      hint = "Дахин дарахад орчуулагдсан хэсэг хадгалагдсан тул үлдсэнийг л орчуулна.";
+    }
+    return {detail: "Алдаа: " + code, hint: hint};
+  }
+
+  /* ---------- Translate ---------- */
+  async function run(){
+    if (busy || !items.length) return;
+    busy = true;
+    $("go").disabled = true;
+    setError("");
+    show("result", false);
+    show("progress", true);
+    setStep(2);
+
+    var pending = [];
+    for (var i = 0; i < items.length; i += BATCH){
+      var idxs = [];
+      for (var j = i; j < Math.min(i + BATCH, items.length); j++){
+        if (items[j].mn == null) idxs.push(j);
+      }
+      if (idxs.length) pending.push(idxs);
+    }
+
+    function doneCount(){
+      return items.filter(function(x){ return x.mn != null; }).length;
+    }
+    setProgress(doneCount(), items.length);
+
+    var next = 0, failedErr = null;
+    async function worker(){
+      while (!failedErr && next < pending.length){
+        var idxs = pending[next++];
+        try{
+          var out = await translateAdaptive(idxs.map(function(k){ return items[k].text; }));
+          idxs.forEach(function(k, n){ items[k].mn = out[n]; });
+          setProgress(doneCount(), items.length);
+        }catch(e){
+          failedErr = e;
+        }
+      }
+    }
+    var workers = [];
+    for (var w = 0; w < PARALLEL; w++) workers.push(worker());
+    await Promise.all(workers);
+
+    busy = false;
+    $("go").disabled = false;
+    show("progress", false);
+
+    if (failedErr){
+      var d = describeError(failedErr);
+      setError("Орчуулга амжилтгүй боллоо.", d.detail, d.hint);
+      return;
+    }
+    renderResult();
+  }
+
+  function renderResult(){
+    var box = $("preview");
+    box.textContent = "";
+    items.forEach(function(it){
+      var pair = document.createElement("div");
+      pair.className = "pair";
+      var t = document.createElement("div");
+      t.className = "t";
+      t.textContent = it.num + " · " + it.time;
+      var a = document.createElement("div");
+      a.className = "a";
+      a.textContent = it.text;
+      var b = document.createElement("div");
+      b.className = "b";
+      b.textContent = it.mn;
+      pair.appendChild(t); pair.appendChild(a); pair.appendChild(b);
+      box.appendChild(pair);
+    });
+    show("result", true);
+    setStep(3);
+    $("result").scrollIntoView({behavior: "smooth", block: "start"});
+  }
+
+  /* ---------- Download / copy ---------- */
+  function outName(){
+    return fileName.replace(/\.srt$/i, "") + ".mn.srt";
+  }
+  $("download").addEventListener("click", function(){
+    var blob = new Blob([writeSrt(items)], {type: "text/plain;charset=utf-8"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = outName();
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  });
+  $("copy").addEventListener("click", async function(){
+    var btn = $("copy"), text = writeSrt(items);
+    try{
+      await navigator.clipboard.writeText(text);
+    }catch(e){
+      var ta = document.createElement("textarea");
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); }catch(_){}
+      ta.remove();
+    }
+    btn.textContent = "Хуулсан";
+    setTimeout(function(){ btn.textContent = "Хуулж авах"; }, 1500);
+  });
+
+  /* ---------- Wiring ---------- */
+  var drop = $("drop");
+  function openPicker(){ $("fileInput").click(); }
+  $("pick").addEventListener("click", function(e){ e.stopPropagation(); openPicker(); });
+  $("sample").addEventListener("click", function(e){ e.stopPropagation(); loadText("jishee.srt", SAMPLE); });
+  drop.addEventListener("click", openPicker);
+  drop.addEventListener("keydown", function(e){
+    if ((e.key === "Enter" || e.key === " ") && e.target === drop){ e.preventDefault(); openPicker(); }
+  });
+  $("fileInput").addEventListener("change", function(e){
+    readFile(e.target.files[0]);
+    e.target.value = "";
+  });
+  $("go").addEventListener("click", run);
+  $("reset").addEventListener("click", function(){
+    if (busy) return;
+    items = []; fileName = "";
+    show("fileBox", false); show("result", false); show("progress", false);
+    setError("");
+    setStep(1);
+  });
+
+  ["dragenter","dragover"].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add("over"); });
+  });
+  ["dragleave","drop"].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove("over"); });
+  });
+  drop.addEventListener("drop", function(e){
+    if (e.dataTransfer && e.dataTransfer.files.length) readFile(e.dataTransfer.files[0]);
+  });
+})();
+</script>
+</body>
+</html>
