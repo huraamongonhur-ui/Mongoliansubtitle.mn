@@ -1,4 +1,4 @@
-api/
+api/translate.js
 // Vercel serverless function: API key зөвхөн энд (серверт) хадгалагдана.
 
 module.exports = async function handler(req, res) {
